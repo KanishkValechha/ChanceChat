@@ -3,7 +3,6 @@ import { useInView } from "react-intersection-observer";
 import {
   Shuffle,
   Coins,
-  UserCircle,
   Shield,
   Vote,
   Share2,
@@ -12,13 +11,13 @@ import {
   Users,
   LucideIcon,
 } from "lucide-react";
-import { ReactNode, ButtonHTMLAttributes } from "react";
+// import { ReactNode, ButtonHTMLAttributes } from "react";
 
 // Interfaces
-interface CustomButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children: ReactNode;
-  className?: string;
-}
+// interface CustomButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+//   children: ReactNode;
+//   className?: string;
+// }
 
 interface FeatureCardProps {
   icon: LucideIcon;
@@ -52,21 +51,21 @@ const staggerContainer = {
   },
 };
 
-const CustomButton: React.FC<CustomButtonProps> = ({
-  children,
-  className,
-  onClick,
-}) => {
-  return (
-    <button
-      className={`bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 
-        hover:to-purple-600 text-white px-8 py-6 rounded-xl text-lg ${className}`}
-      onClick={onClick}
-    >
-      {children}
-    </button>
-  );
-};
+// const CustomButton: React.FC<CustomButtonProps> = ({
+//   children,
+//   className,
+//   onClick,
+// }) => {
+//   return (
+//     <button
+//       className={`bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 
+//         hover:to-purple-600 text-white px-8 py-6 rounded-xl text-lg ${className}`}
+//       onClick={onClick}
+//     >
+//       {children}
+//     </button>
+//   );
+// };
 
 const FeatureCard: React.FC<FeatureCardProps> = ({
   icon: Icon,

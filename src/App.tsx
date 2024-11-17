@@ -1,7 +1,7 @@
 // import { useState } from 'react'
 import LandingPage from "./components/Landing";
 import { Features, About } from "./components/Feature";
-import Social from "./components/social";
+// import Social from "./components/social";
 
 function App() {
   return (
