@@ -1,7 +1,24 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import PropTypes from "prop-types";
 import Spline from "@splinetool/react-spline";
+import { ReactNode, ButtonHTMLAttributes } from "react";
+
+// Define interfaces for component props
+interface FloatingCardProps {
+  children: ReactNode;
+  className?: string;
+}
+
+interface StatsCardProps {
+  value: string;
+  label: string;
+}
+
+interface CustomButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children: ReactNode;
+  className?: string;
+  variant?: "default" | "outline";
+}
 
 // Animation variants
 const fadeInUp = {
@@ -31,16 +48,11 @@ const fadeInRight = {
   },
 };
 
-const FloatingCard = ({ children, className }) => {
+const FloatingCard: React.FC<FloatingCardProps> = ({ children, className }) => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
-
-  FloatingCard.propTypes = {
-    children: PropTypes.node.isRequired,
-    className: PropTypes.string,
-  };
 
   return (
     <motion.div
@@ -56,16 +68,11 @@ const FloatingCard = ({ children, className }) => {
   );
 };
 
-const StatsCard = ({ value, label }) => {
+const StatsCard: React.FC<StatsCardProps> = ({ value, label }) => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
-
-  StatsCard.propTypes = {
-    value: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
-  };
 
   return (
     <motion.div
@@ -80,19 +87,26 @@ const StatsCard = ({ value, label }) => {
   );
 };
 
-const CustomButton = ({ children, className, onClick }) => {
+const CustomButton: React.FC<CustomButtonProps> = ({
+  children,
+  className,
+  onClick,
+  variant = "default",
+  ...props
+}) => {
   return (
     <button
       className={`bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 
         hover:to-purple-600 text-white px-8 py-6 rounded-xl text-lg ${className}`}
       onClick={onClick}
+      {...props}
     >
       {children}
     </button>
   );
 };
 
-const LandingPage = () => {
+const LandingPage: React.FC = () => {
   return (
     <div className="w-screen h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
       {/* Navigation */}
@@ -195,11 +209,11 @@ const LandingPage = () => {
               {/* Decorative elements */}
               <div
                 className="absolute top-0 right-0 w-72 h-72 bg-blue-500/20 rounded-full 
-        filter blur-3xl transform translate-x-1/2 -translate-y-1/2"
+                filter blur-3xl transform translate-x-1/2 -translate-y-1/2"
               ></div>
               <div
                 className="absolute bottom-0 left-0 w-72 h-72 bg-purple-500/20 rounded-full 
-        filter blur-3xl transform -translate-x-1/2 translate-y-1/2"
+                filter blur-3xl transform -translate-x-1/2 translate-y-1/2"
               ></div>
 
               {/* Placeholder text - Replace this div with your Spline component */}

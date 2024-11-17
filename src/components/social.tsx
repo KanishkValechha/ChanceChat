@@ -15,8 +15,80 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-// Mock data
-const mockPosts = [
+// Type definitions
+interface Author {
+  name: string;
+  handle: string;
+  avatar: string;
+  verified: boolean;
+}
+
+interface PostStats {
+  upvotes: number;
+  downvotes: number;
+  comments: number;
+  shares: number;
+}
+
+interface Post {
+  id: number;
+  author: Author;
+  content: string;
+  timestamp: string;
+  stats: PostStats;
+  tokens: number;
+  tags: string[];
+}
+
+interface UserStats {
+  posts: number;
+  followers: number;
+  following: number;
+  tokensEarned: number;
+}
+
+interface UserProfile {
+  name: string;
+  handle: string;
+  avatar: string;
+  stats: UserStats;
+  reputation: number;
+  topCategories: string[];
+}
+
+interface Proposal {
+  id: number;
+  title: string;
+  description: string;
+  status: string;
+  votesFor: number;
+  votesAgainst: number;
+  endTime: string;
+  category: string;
+}
+
+// Animation variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5 },
+  },
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+// Mock data with types
+const mockPosts: Post[] = [
   {
     id: 1,
     author: {
@@ -57,10 +129,9 @@ const mockPosts = [
     tokens: 98,
     tags: ["Art", "NFT", "Crypto"],
   },
-  // Add more mock posts as needed
 ];
 
-const mockUser = {
+const mockUser: UserProfile = {
   name: "John Doe",
   handle: "@johndoe",
   avatar: "JD",
@@ -74,7 +145,7 @@ const mockUser = {
   topCategories: ["Technology", "Crypto", "Gaming"],
 };
 
-const mockProposals = [
+const mockProposals: Proposal[] = [
   {
     id: 1,
     title: "Implement Token Burning Mechanism",
@@ -99,28 +170,24 @@ const mockProposals = [
   },
 ];
 
-// Animation variants
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5 },
-  },
-};
+// Component Props interfaces
+interface SidebarProps {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+}
 
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
+interface CustomButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+  className?: string;
+}
+
+interface PostComponentProps {
+  post: Post;
+}
 
 // Components
-const Sidebar = ({ activeTab, setActiveTab }) => (
+const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => (
   <div className="w-64 h-screen bg-slate-900 border-r border-slate-800 p-4 fixed left-0">
     <div className="flex items-center gap-2 mb-8">
       <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
@@ -152,39 +219,41 @@ const Sidebar = ({ activeTab, setActiveTab }) => (
   </div>
 );
 
-const CustomButton = ({ children, className, onClick }) => {
+const CustomButton: React.FC<CustomButtonProps> = ({
+  children,
+  className,
+  ...props
+}) => {
   return (
     <button
       className={`bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 
         hover:to-purple-600 text-white px-8 py-6 rounded-xl text-lg ${className}`}
-      onClick={onClick}
+      {...props}
     >
       {children}
     </button>
   );
 };
 
-const Post = ({ post }) => {
+const Post: React.FC<PostComponentProps> = ({ post }) => {
   const [votes, setVotes] = useState({
     up: post.stats.upvotes,
     down: post.stats.downvotes,
   });
-  const [userVote, setUserVote] = useState(null); // null = no vote, 'up' = liked, 'down' = disliked
+  const [userVote, setUserVote] = useState<"up" | "down" | null>(null);
 
-  const handleVote = (type) => {
+  const handleVote = (type: "up" | "down") => {
     if (type === userVote) {
-      // If the user clicks the same vote, remove the vote
       setVotes((prev) => ({
         ...prev,
         [type]: prev[type] - 1,
       }));
       setUserVote(null);
     } else {
-      // If the user changes their vote
       setVotes((prev) => ({
-        up: userVote === "down" ? prev.up + 1 : prev.up, // Adjust upvotes if switching from 'down'
-        down: userVote === "up" ? prev.down + 1 : prev.down, // Adjust downvotes if switching from 'up'
-        [type]: prev[type] + 1, // Add to the selected vote
+        up: userVote === "down" ? prev.up + 1 : prev.up,
+        down: userVote === "up" ? prev.down + 1 : prev.down,
+        [type]: prev[type] + 1,
       }));
       setUserVote(type);
     }
@@ -195,7 +264,6 @@ const Post = ({ post }) => {
       variants={fadeInUp}
       className="bg-slate-800/50 backdrop-blur-lg rounded-xl p-6 border border-slate-700"
     >
-      {/* Author Info */}
       <div className="flex items-center gap-3 mb-4">
         <div
           className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 
@@ -217,10 +285,8 @@ const Post = ({ post }) => {
         <div className="text-sm text-slate-400 ml-auto">{post.timestamp}</div>
       </div>
 
-      {/* Content */}
       <p className="mb-4">{post.content}</p>
 
-      {/* Tags */}
       <div className="flex gap-2 mb-4">
         {post.tags.map((tag) => (
           <span
@@ -232,7 +298,6 @@ const Post = ({ post }) => {
         ))}
       </div>
 
-      {/* Interaction Buttons */}
       <div className="flex items-center gap-6">
         <button
           onClick={() => handleVote("up")}
@@ -273,7 +338,7 @@ const Post = ({ post }) => {
   );
 };
 
-const HomeFeed = () => (
+const HomeFeed: React.FC = () => (
   <motion.div
     variants={staggerContainer}
     initial="hidden"
@@ -282,7 +347,7 @@ const HomeFeed = () => (
   >
     <div className="flex items-center justify-between mb-8">
       <h2 className="text-2xl font-bold">Home Feed</h2>
-      <CustomButton variant="outline" className="flex items-center gap-2">
+      <CustomButton className="flex items-center gap-2">
         <Shuffle className="w-4 h-4" />
         Shuffle Feed
       </CustomButton>
@@ -293,7 +358,38 @@ const HomeFeed = () => (
   </motion.div>
 );
 
-const ProfilePage = () => (
+// Additional interfaces
+interface StatsCardProps {
+  icon: React.ElementType;
+  title: string;
+  value: string;
+  subtitle: string;
+  colorClass: string;
+}
+
+// Components
+const StatsCard: React.FC<StatsCardProps> = ({
+  icon: Icon,
+  title,
+  value,
+  subtitle,
+  colorClass,
+}) => (
+  <div className="bg-slate-800/50 backdrop-blur-lg rounded-xl p-6 border border-slate-700">
+    <div className="flex items-center gap-3 mb-4">
+      <div
+        className={`w-10 h-10 rounded-lg ${colorClass} flex items-center justify-center`}
+      >
+        <Icon className="w-5 h-5 text-blue-400" />
+      </div>
+      <div className="font-semibold">{title}</div>
+    </div>
+    <div className="text-3xl font-bold text-blue-400 mb-1">{value}</div>
+    <div className="text-sm text-slate-400">{subtitle}</div>
+  </div>
+);
+
+const ProfilePage: React.FC = () => (
   <div className="space-y-8">
     {/* Profile Header */}
     <div className="bg-slate-800/50 backdrop-blur-lg rounded-xl p-8 border border-slate-700">
@@ -337,40 +433,27 @@ const ProfilePage = () => (
 
     {/* Stats Cards */}
     <div className="grid grid-cols-3 gap-6">
-      <div className="bg-slate-800/50 backdrop-blur-lg rounded-xl p-6 border border-slate-700">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
-            <BarChart3 className="w-5 h-5 text-blue-400" />
-          </div>
-          <div className="font-semibold">Engagement Rate</div>
-        </div>
-        <div className="text-3xl font-bold text-blue-400 mb-1">92%</div>
-        <div className="text-sm text-slate-400">Above average</div>
-      </div>
-
-      <div className="bg-slate-800/50 backdrop-blur-lg rounded-xl p-6 border border-slate-700">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
-            <TrendingUp className="w-5 h-5 text-purple-400" />
-          </div>
-          <div className="font-semibold">Growth Rate</div>
-        </div>
-        <div className="text-3xl font-bold text-purple-400 mb-1">+47%</div>
-        <div className="text-sm text-slate-400">This month</div>
-      </div>
-
-      <div className="bg-slate-800/50 backdrop-blur-lg rounded-xl p-6 border border-slate-700">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
-            <Vote className="w-5 h-5 text-blue-400" />
-          </div>
-          <div className="font-semibold">Reputation Score</div>
-        </div>
-        <div className="text-3xl font-bold text-blue-400 mb-1">
-          {mockUser.reputation}
-        </div>
-        <div className="text-sm text-slate-400">Excellent</div>
-      </div>
+      <StatsCard
+        icon={BarChart3}
+        title="Engagement Rate"
+        value="92%"
+        subtitle="Above average"
+        colorClass="bg-blue-500/20"
+      />
+      <StatsCard
+        icon={TrendingUp}
+        title="Growth Rate"
+        value="+47%"
+        subtitle="This month"
+        colorClass="bg-purple-500/20"
+      />
+      <StatsCard
+        icon={Vote}
+        title="Reputation Score"
+        value={mockUser.reputation.toString()}
+        subtitle="Excellent"
+        colorClass="bg-blue-500/20"
+      />
     </div>
 
     {/* Top Categories */}
@@ -390,7 +473,7 @@ const ProfilePage = () => (
   </div>
 );
 
-const GovernanceDashboard = () => (
+const GovernanceDashboard: React.FC = () => (
   <div className="space-y-8">
     <div className="flex items-center justify-between">
       <h2 className="text-2xl font-bold">Governance Dashboard</h2>
@@ -445,66 +528,9 @@ const GovernanceDashboard = () => (
     </div>
   </div>
 );
-// const SettingsPage = () => {
-//   const [username, setUsername] = useState("JohnDoe");
-//   const [email, setEmail] = useState("johndoe@example.com");
-//   const [password, setPassword] = useState("");
 
-//   const handleLogout = () => {
-//     // Implement logout logic here, e.g., clear local storage, redirect to login page
-//     console.log("Logging out...");
-//   };
-
-//   return (
-//     <div className="bg-slate-800/50 backdrop-blur-lg rounded-xl p-6 border border-slate-700">
-//       <h2 className="text-2xl font-bold mb-4">Settings</h2>
-
-//       <div className="space-y-4">
-//         <div className="flex items-center">
-//           <label className="w-24 text-right">Username:</label>
-//           <input
-//             type="text"
-//             value={username}
-//             onChange={(e) => setUsername(e.target.value)}
-//             className="flex-1 bg-slate-800/20 text-white px-3 py-2 rounded-md"
-//           />
-//         </div>
-
-//         <div className="flex items-center">
-//           <label className="w-24 text-right">Email:</label>
-//           <input
-//             type="email"
-//             value={email}
-//             onChange={(e) => setEmail(e.target.value)}
-//             className="flex-1 bg-slate-800/20 text-white px-3 py-2 rounded-md"
-//           />
-//         </div>
-
-//         <div className="flex items-center">
-//           <label className="w-24 text-right">Password:</label>
-//           <input
-//             type="password"
-//             value={password}
-//             onChange={(e) => setPassword(e.target.value)}
-//             className="flex-1 bg-slate-800/20 text-white px-3 py-2 rounded-md"
-//           />
-//         </div>
-//       </div>
-
-//       <div className="flex justify-end mt-4">
-//         <button
-//           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
-//           onClick={handleLogout}
-//         >
-//           Logout
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-const Social = () => {
-  const [activeTab, setActiveTab] = useState("home");
+const Social: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<string>("home");
 
   return (
     <div className="flex">
@@ -513,7 +539,6 @@ const Social = () => {
         {activeTab === "home" && <HomeFeed />}
         {activeTab === "profile" && <ProfilePage />}
         {activeTab === "governance" && <GovernanceDashboard />}
-        {/* {activeTab === "settings" && <SettingsPage />} */}
       </main>
     </div>
   );

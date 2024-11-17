@@ -10,7 +10,27 @@ import {
   Bot,
   Code,
   Users,
+  LucideIcon,
 } from "lucide-react";
+import { ReactNode, ButtonHTMLAttributes } from "react";
+
+// Interfaces
+interface CustomButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children: ReactNode;
+  className?: string;
+}
+
+interface FeatureCardProps {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+}
+
+interface StatItem {
+  value: string;
+  label: string;
+}
+
 
 // Animation variants
 const fadeInUp = {
@@ -31,7 +51,12 @@ const staggerContainer = {
     },
   },
 };
-const CustomButton = ({ children, className, onClick }) => {
+
+const CustomButton: React.FC<CustomButtonProps> = ({
+  children,
+  className,
+  onClick,
+}) => {
   return (
     <button
       className={`bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 
@@ -43,7 +68,11 @@ const CustomButton = ({ children, className, onClick }) => {
   );
 };
 
-const FeatureCard = ({ icon: Icon, title, description }) => {
+const FeatureCard: React.FC<FeatureCardProps> = ({
+  icon: Icon,
+  title,
+  description,
+}) => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -71,13 +100,13 @@ const FeatureCard = ({ icon: Icon, title, description }) => {
   );
 };
 
-const Features = () => {
+const Features: React.FC = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
 
-  const features = [
+  const features: FeatureCardProps[] = [
     {
       icon: Shuffle,
       title: "Random Discovery",
@@ -148,25 +177,17 @@ const Features = () => {
   );
 };
 
-const About = () => {
+const About: React.FC = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
 
-  const stats = [
+  const stats: StatItem[] = [
     { value: "100%", label: "Decentralized" },
     { value: "24/7", label: "Support" },
     { value: "10+", label: "Blockchain Networks" },
   ];
-
-  const team = [
-    { name: "Alex Thompson", role: "Founder & CEO" },
-    { name: "Sarah Chen", role: "Chief Technology Officer" },
-    { name: "Michael Rodriguez", role: "Head of Product" },
-    { name: "Emma Williams", role: "Community Lead" },
-  ];
-
   return (
     <section className="py-20 bg-gradient-to-br from-slate-900 to-slate-800">
       <div className="container mx-auto px-6">
@@ -249,5 +270,4 @@ const About = () => {
   );
 };
 
-// Export the components
 export { Features, About };
