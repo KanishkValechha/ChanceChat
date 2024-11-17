@@ -2,6 +2,9 @@ import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import Spline from "@splinetool/react-spline";
 import { ReactNode, ButtonHTMLAttributes } from "react";
+import { Features, About } from "./Feature";
+import WalletAuth from "./Wallet";
+
 
 // Define interfaces for component props
 interface FloatingCardProps {
@@ -13,6 +16,7 @@ interface StatsCardProps {
   value: string;
   label: string;
 }
+
 
 interface CustomButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
@@ -107,6 +111,10 @@ const CustomButton: React.FC<CustomButtonProps> = ({
 };
 
 const LandingPage: React.FC = () => {
+  const handleCreateAccount = () => {
+    // Redirect to Martian Wallet's website
+    window.open("https://www.martianwallet.xyz/", "_blank");
+  };
   return (
     <div className="w-screen h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
       {/* Navigation */}
@@ -139,7 +147,7 @@ const LandingPage: React.FC = () => {
       </motion.nav>
 
       {/* Main Content */}
-      <main className="container mx-auto px-6 py-12 md:py-24">
+      <main className="container mx-auto px-6 pt-12 md:pt-24">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Left Column - Text Content */}
           <div className="space-y-8">
@@ -184,8 +192,10 @@ const LandingPage: React.FC = () => {
               variants={fadeInLeft}
               className="flex flex-col sm:flex-row gap-4"
             >
-              <CustomButton>Create Account</CustomButton>
-              <CustomButton variant="outline">Login</CustomButton>
+              <CustomButton onClick={handleCreateAccount}>
+                Create Account
+              </CustomButton>
+              <WalletAuth />
             </motion.div>
 
             {/* Stats */}
@@ -249,6 +259,8 @@ const LandingPage: React.FC = () => {
           </motion.div>
         </div>
       </main>
+      <Features />
+      <About />
     </div>
   );
 };

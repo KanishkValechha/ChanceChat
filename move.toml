@@ -1,0 +1,146 @@
+module 0xc0787d9d6241b810dc9de4fc7d344fdbbe1836a2bf3e3f06d0e61a0dedff4048::social_media {
+
+    use std::signer;
+    use std::address;
+    use aptos_framework::event;
+
+    // Define the State resource
+    struct State has key {
+        posts: vector<Post>,
+        proposals: vector<Proposal>,
+    }
+
+    // Define the Post structure
+    struct Post has key {
+        id: u64,
+        content: vector<u8>,
+        creator: address,
+        upvotes: u64,
+        downvotes: u64,
+    }
+
+    // Define Proposal structure
+    struct Proposal has key {
+        id: u64,
+        description: vector<u8>,
+        creator: address,
+        approvals: u64,
+        rejections: u64,
+    }
+
+    // Define the events
+    struct PostCreated has copy, drop {
+        id: u64,
+        creator: address,
+    }
+
+    struct VoteCast has copy, drop {
+        post_id: u64,
+        voter: address,
+        is_upvote: bool,
+    }
+
+    struct ProposalCreated has copy, drop {
+        id: u64,
+        creator: address,
+    }
+
+    // Event handles
+    struct EventHandle<T: copy, drop> has key {
+        counter: u64,
+        guid: address,
+    }
+
+    // Initialize State
+    public entry fun initialize(account: &signer) acquires State {
+        let address = signer::address_of(account);
+        move_to(account, State {
+            posts: vector::empty(),
+            proposals: vector::empty(),
+        });
+    }
+
+    // Create a new post
+    public entry fun create_post(
+        account: &signer,
+        content: vector<u8>,
+    ) acquires State {
+        let address = signer::address_of(account);
+        let state = borrow_global_mut<State>(address);
+        let post_id = vector::length(&state.posts) + 1;
+        let post = Post {
+            id: post_id,
+            content,
+            creator: address,
+            upvotes: 0,
+            downvotes: 0,
+        };
+        vector::push_back(&mut state.posts, post);
+
+        event::emit(PostCreated {
+            id: post_id,
+            creator: address,
+        });
+    }
+
+    // Vote on a post
+    public entry fun vote_on_post(
+        account: &signer,
+        post_id: u64,
+        is_upvote: bool,
+    ) acquires State {
+        let address = signer::address_of(account);
+        let state = borrow_global_mut<State>(address);
+        let post_ref = &mut state.posts[post_id - 1];
+        if (is_upvote) {
+            post_ref.upvotes = post_ref.upvotes + 1;
+        } else {
+            post_ref.downvotes = post_ref.downvotes + 1;
+        };
+
+        event::emit(VoteCast {
+            post_id,
+            voter: address,
+            is_upvote,
+        });
+    }
+
+    // Create a proposal
+    public entry fun create_proposal(
+        account: &signer,
+        description: vector<u8>,
+    ) acquires State {
+        let address = signer::address_of(account);
+        let state = borrow_global_mut<State>(address);
+        let proposal_id = vector::length(&state.proposals) + 1;
+        let proposal = Proposal {
+            id: proposal_id,
+            description,
+            creator: address,
+            approvals: 0,
+            rejections: 0,
+        };
+        vector::push_back(&mut state.proposals, proposal);
+
+        event::emit(ProposalCreated {
+            id: proposal_id,
+            creator: address,
+        });
+    }
+
+    // Vote on a proposal
+    public entry fun vote_on_proposal(
+        account: &signer,
+        proposal_id: u64,
+        is_approve: bool,
+    ) acquires State {
+        let address = signer::address_of(account);
+        let state = borrow_global_mut<State>(address);
+        let proposal_ref = &mut state.proposals[proposal_id - 1];
+        if (is_approve) {
+            proposal_ref.approvals = proposal_ref.approvals + 1;
+        } else {
+            proposal_ref.rejections = proposal_ref.rejections + 1;
+        };
+    }
+}
