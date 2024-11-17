@@ -147,7 +147,7 @@ const LandingPage: React.FC = () => {
       </motion.nav>
 
       {/* Main Content */}
-      <main className="container mx-auto px-6 pt-12 md:pt-24">
+      <main className="container mx-auto px-6 py-12 md:py-28">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Left Column - Text Content */}
           <div className="space-y-8">
