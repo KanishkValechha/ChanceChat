@@ -8,6 +8,27 @@ interface MartianWallet {
   // Add other methods as needed
 }
 
+interface UserProfile {
+  name: string;
+  handle: string;
+  avatar: string;
+  stats: {
+    posts: number;
+    followers: number;
+    following: number;
+    tokensEarned: number;
+  };
+  reputation: number;
+  topCategories: string[];
+}
+
+interface UserAuth {
+  id: string;
+  email: string;
+  profile?: UserProfile;
+  isProfileComplete: boolean;
+}
+
 declare interface Window {
   martian?: MartianWallet;
 }

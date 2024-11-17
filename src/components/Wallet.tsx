@@ -30,6 +30,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   );
 };
 
+
 const WalletAuth: React.FC = () => {
   const [wallet, setWallet] = useState<WalletData | null>(null);
   const navigate = useNavigate();
@@ -57,7 +58,8 @@ const WalletAuth: React.FC = () => {
       if (response.status === 200 && response.address) {
         const walletAddress = response.address; // Extract wallet address
         setWallet({ address: walletAddress });
-        localStorage.setItem("walletAddress", walletAddress);
+        localStorage.setItem("walletConnected", "true"); // Set connected flag
+        localStorage.setItem("walletAddress", walletAddress); // Store address
 
         // Redirect to /social after login
         navigate("/social");
@@ -83,5 +85,6 @@ const WalletAuth: React.FC = () => {
     </CustomButton>
   );
 };
+
 
 export default WalletAuth;
