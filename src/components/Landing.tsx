@@ -4,7 +4,7 @@ import Spline from "@splinetool/react-spline";
 import { ReactNode, ButtonHTMLAttributes } from "react";
 import { Features, About } from "./Feature";
 import WalletAuth from "./Wallet";
-
+import Contact from "./Contact";
 
 // Define interfaces for component props
 interface FloatingCardProps {
@@ -200,9 +200,9 @@ const LandingPage: React.FC = () => {
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-6 pt-8">
-              <StatsCard value="50K+" label="Active Users" />
-              <StatsCard value="100K+" label="Posts Created" />
-              <StatsCard value="1M+" label="Tokens Earned" />
+              <StatsCard value="0K+" label="Active Users" />
+              <StatsCard value="00K+" label="Posts Created" />
+              <StatsCard value="0M+" label="Tokens Earned" />
             </div>
           </div>
 
@@ -259,8 +259,15 @@ const LandingPage: React.FC = () => {
           </motion.div>
         </div>
       </main>
-      <Features />
-      <About />
+      <section id="features">
+        <Features />
+      </section>
+      <section id="about">
+        <About />
+      </section>
+      <section id="contact">
+        <Contact />
+      </section>
     </div>
   );
 };
